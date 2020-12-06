@@ -4,8 +4,8 @@ import { Grid } from './classes/grid.js';
 // Global variables
 const FPS = 20;
 
-const columns: number = 20;
-const rows: number = 20;
+const columns: number = 10;
+const rows: number = 10;
 
 const startCell = 0;
 const endCell = 1 * rows;

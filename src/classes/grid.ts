@@ -52,6 +52,15 @@ export class Grid {
         // Found end!
         console.log('Success!');
         current.dyePath();
+        let temp = current;
+        const shortestPath = [];
+        temp.dyePath();
+        while (temp.previousNode) {
+          shortestPath.push(temp.previousNode);
+          temp.dyePath();
+          temp = temp.previousNode;
+        }
+        temp.dyePath();
         return;
       }
 
@@ -74,6 +83,7 @@ export class Grid {
         if (this.openSet.indexOf(neighbour) !== -1) {
           if (tentative_gScore < neighbour.g) {
             neighbour.g = tentative_gScore;
+            neighbour.previousNode = current;
           }
         } else {
           neighbour.g = tentative_gScore;
@@ -87,16 +97,7 @@ export class Grid {
 
       setTimeout(() => {
         this.aStar();
-        let temp = current;
-        const shortestPath = [];
-        temp.dyePath();
-        while (temp.previousNode) {
-          shortestPath.push(temp.previousNode);
-          temp.dyePath();
-          temp = temp.previousNode;
-        }
-        temp.dyePath();
-      }, 5);
+      }, 1000 / 5);
     } else {
       // No solution
       console.log('failed');
@@ -163,10 +164,10 @@ class Node {
   height: number;
   width: number;
 
-  f: number;
-  g: number;
-  h: number;
-  isVisted: boolean;
+  public f: number;
+  public g: number;
+  public h: number;
+  public isVisted: boolean;
 
   constructor(i: number, j: number, rows: number, cols: number) {
     this.elm = document.createElement('div');
@@ -208,9 +209,17 @@ class Node {
 
   public open() {
     this.elm.style.background = 'green';
+
+    const textElement = document.createElement('span');
+    textElement.innerHTML = 'val: ' + this.g;
+    this.elm.appendChild(textElement);
   }
   public close() {
     this.elm.style.background = 'red';
+    const textElement = document.createElement('span');
+    textElement.style.fontSize = '1.5em';
+    textElement.innerHTML = 'val: ' + this.g;
+    this.elm.appendChild(textElement);
     this.isVisted = true;
   }
 

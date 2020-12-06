@@ -34,6 +34,15 @@ export class Grid {
                 // Found end!
                 console.log('Success!');
                 current.dyePath();
+                let temp = current;
+                const shortestPath = [];
+                temp.dyePath();
+                while (temp.previousNode) {
+                    shortestPath.push(temp.previousNode);
+                    temp.dyePath();
+                    temp = temp.previousNode;
+                }
+                temp.dyePath();
                 return;
             }
             // removes the current from the list
@@ -50,6 +59,7 @@ export class Grid {
                 if (this.openSet.indexOf(neighbour) !== -1) {
                     if (tentative_gScore < neighbour.g) {
                         neighbour.g = tentative_gScore;
+                        neighbour.previousNode = current;
                     }
                 }
                 else {
@@ -62,16 +72,7 @@ export class Grid {
             });
             setTimeout(() => {
                 this.aStar();
-                let temp = current;
-                const shortestPath = [];
-                temp.dyePath();
-                while (temp.previousNode) {
-                    shortestPath.push(temp.previousNode);
-                    temp.dyePath();
-                    temp = temp.previousNode;
-                }
-                temp.dyePath();
-            }, 5);
+            }, 1000 / 5);
         }
         else {
             // No solution
@@ -155,9 +156,16 @@ class Node {
     }
     open() {
         this.elm.style.background = 'green';
+        const textElement = document.createElement('span');
+        textElement.innerHTML = 'val: ' + this.g;
+        this.elm.appendChild(textElement);
     }
     close() {
         this.elm.style.background = 'red';
+        const textElement = document.createElement('span');
+        textElement.style.fontSize = '1.5em';
+        textElement.innerHTML = 'val: ' + this.g;
+        this.elm.appendChild(textElement);
         this.isVisted = true;
     }
     dyePath() {
