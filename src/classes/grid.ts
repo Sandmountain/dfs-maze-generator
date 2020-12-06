@@ -28,12 +28,13 @@ export class Grid {
     for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
         this.grid[i][j] = new Node(i, j, rows, cols);
+        this.grid[i][j].show();
       }
     }
 
     //Start upper left, goal bottom right
-    this.startNode = this.grid[0][0];
-    this.goalNode = this.grid[cols - 1][rows - 1];
+    this.goalNode = this.grid[0][0];
+    this.startNode = this.grid[cols - 1][rows - 1];
 
     // The set of discovered nodes that may need to be (re-)expanded.
     // Initially, only the start node is known.
@@ -43,25 +44,18 @@ export class Grid {
     this.aStar();
   }
 
-  aStar() {
-    if (this.openSet.length > 0) {
+  async aStar() {
+    while (this.openSet.length > 0) {
       // Retrives the lowest fscore from the open set list
       const current: Node = this.openSet.reduce((a, b) => (a.f < b.f ? a : b));
 
       if (current === this.goalNode) {
         // Found end!
         console.log('Success!');
-        current.dyePath();
-        let temp = current;
-        const shortestPath = [];
-        temp.dyePath();
-        while (temp.previousNode) {
-          shortestPath.push(temp.previousNode);
-          temp.dyePath();
-          temp = temp.previousNode;
-        }
-        temp.dyePath();
+        this.drawNewState(current);
         return;
+      } else {
+        await this.drawNewState(current);
       }
 
       // removes the current from the list
@@ -82,35 +76,29 @@ export class Grid {
 
         if (this.openSet.indexOf(neighbour) !== -1) {
           if (tentative_gScore < neighbour.g) {
+            // Add values to the temporary best node
             neighbour.g = tentative_gScore;
+            neighbour.h = neighbour.heuristic(this.goalNode);
+            neighbour.f = neighbour.g + neighbour.h;
             neighbour.previousNode = current;
           }
         } else {
+          //
           neighbour.g = tentative_gScore;
+          neighbour.previousNode = current;
+
+          neighbour.h = neighbour.heuristic(this.goalNode);
+          neighbour.f = neighbour.g + neighbour.h;
           this.openSet.push(neighbour);
         }
-
-        neighbour.h = neighbour.heuristic(this.goalNode);
-        neighbour.f = neighbour.g + neighbour.h;
-        neighbour.previousNode = current;
       });
-
-      setTimeout(() => {
-        this.aStar();
-      }, 1000 / 5);
-    } else {
-      // No solution
-      console.log('failed');
-      return;
     }
+    // No solution
+    console.log('failed');
+    return;
+  }
 
-    // Show the grid
-    for (let i = 0; i < this.cols; i++) {
-      for (let j = 0; j < this.rows; j++) {
-        this.grid[i][j].show();
-      }
-    }
-
+  drawNewState(current: Node) {
     for (let i = 0; i < this.openSet.length; i++) {
       this.openSet[i].open();
     }
@@ -118,6 +106,20 @@ export class Grid {
     for (let i = 0; i < this.closedSet.length; i++) {
       this.closedSet[i].close();
     }
+
+    current.dyePath();
+    let temp = current;
+    const shortestPath = [];
+
+    temp.dyePath();
+
+    while (temp.previousNode) {
+      shortestPath.push(temp.previousNode);
+      temp = temp.previousNode;
+      temp.dyePath();
+    }
+
+    return new Promise((r) => setTimeout(r, 1));
   }
 
   findNeighbours(i: number, j: number) {
@@ -178,8 +180,6 @@ class Node {
     this.height = c.clientHeight / cols;
     this.width = c.clientWidth / rows;
 
-    // Ram runt hela griden atm
-    //  && i !== 0 && j !== 0 && i !== cols - 1 && j !== rows - 1
     if (Math.random() <= 0.3 && i !== cols - 1 && j !== rows - 1) {
       this.isWall = true;
     } else {
@@ -209,17 +209,15 @@ class Node {
 
   public open() {
     this.elm.style.background = 'green';
-
-    const textElement = document.createElement('span');
-    textElement.innerHTML = 'val: ' + this.g;
-    this.elm.appendChild(textElement);
+    if (this.elm.children.length === 0) {
+      const textElement = document.createElement('p');
+      textElement.innerHTML = '' + this.g;
+      this.elm.appendChild(textElement);
+    }
   }
   public close() {
     this.elm.style.background = 'red';
-    const textElement = document.createElement('span');
-    textElement.style.fontSize = '1.5em';
-    textElement.innerHTML = 'val: ' + this.g;
-    this.elm.appendChild(textElement);
+
     this.isVisted = true;
   }
 
