@@ -7,7 +7,6 @@ export class Grid {
 
   openSet: Array<Node>;
   closedSet: Array<Node>;
-  cameFrom: Array<Node>;
   startNode: Node;
   goalNode: Node;
 
@@ -16,7 +15,6 @@ export class Grid {
     this.cols = cols;
     this.openSet = [];
     this.closedSet = [];
-    this.cameFrom = [];
 
     //Generate Grid
     this.grid = new Array(cols);
@@ -33,8 +31,8 @@ export class Grid {
     }
 
     //Start upper left, goal bottom right
-    this.goalNode = this.grid[0][0];
-    this.startNode = this.grid[cols - 1][rows - 1];
+    this.startNode = this.grid[0][0];
+    this.goalNode = this.grid[cols - 1][rows - 1];
 
     // The set of discovered nodes that may need to be (re-)expanded.
     // Initially, only the start node is known.
@@ -215,6 +213,7 @@ class Node {
       this.elm.appendChild(textElement);
     }
   }
+
   public close() {
     this.elm.style.background = 'red';
 
@@ -232,9 +231,3 @@ class Node {
     //return Math.sqrt(Math.pow(end.i - this.i, 2) + Math.pow(end.j - this.j, 2));
   }
 }
-
-//OpenSet
-// -> Nodes that needs to be processed.
-
-//ClosetSet
-// -> Stores all done things

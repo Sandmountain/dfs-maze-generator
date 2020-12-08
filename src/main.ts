@@ -1,20 +1,22 @@
-import { generateMaze } from './classes/maze.js';
-import { Grid } from './classes/grid.js';
-
+import { Maze } from './classes/maze.js';
 // Global variables
 const FPS = 20;
-
-const columns: number = 40;
-const rows: number = 40;
-
+const columns = 40;
+const rows = columns;
 const startCell = 1;
 const endCell = 1 * rows;
 
 // Create Grid
-//const grid = new Grid(rows, columns, startCell, endCell);
-const grid = generateMaze(columns, rows, startCell, endCell);
-const main = () => {
-  //generateMaze(columns, rows, startCell, endCell);
-};
+let grid = new Maze(rows, columns, startCell, endCell);
+grid.generateMaze();
 
-main();
+const solve = document.getElementById('start-button');
+solve?.addEventListener('click', (e: Event) => grid.aStar());
+
+const newGrid = document.getElementById('grid-button');
+newGrid?.addEventListener('click', (e: Event) => location.reload());
+
+function called(event: Event) {
+  event.preventDefault();
+  console.log('hello');
+}
