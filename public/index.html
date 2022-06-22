@@ -8,9 +8,25 @@
   </head>
 
   <body>
-    <button id="start-button">Solve Maze</button>
-    <button id="grid-button">New Grid</button>
-    <div id="canvas-container"></div>
+    <div class="action-bar">
+      <div class="button-container">
+        <button class="button" id="maze-button">New Maze</button>
+        <button class="button" id="start-button">Solve Maze</button>
+        <span class="seperator"> | </span>
+        <button class="button" id="grid-button">New Vizualisation Grid</button>
+        <button class="button" id="algo-visualization">
+          Start Visualization
+        </button>
+      </div>
+      <div class="input-data-container">
+        <label>Rows / Columns</label>
+        <input type="number" value="40" id="rows" />
+      </div>
+    </div>
+    <p class="info-text">Generating a new maze takes a while...</p>
+    <div class="vis-container">
+      <div id="canvas-container"></div>
+    </div>
 
     <script defer type="module" src="./main.js"></script>
   </body>

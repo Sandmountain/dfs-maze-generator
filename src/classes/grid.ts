@@ -1,4 +1,4 @@
-const c = document.getElementById('canvas-container') as HTMLElement;
+const c = document.getElementById("canvas-container") as HTMLElement;
 
 export class Grid {
   rows: number;
@@ -38,8 +38,6 @@ export class Grid {
     // Initially, only the start node is known.
     this.openSet.push(this.startNode);
     // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start to n currently known.
-
-    this.aStar();
   }
 
   async aStar() {
@@ -49,7 +47,7 @@ export class Grid {
 
       if (current === this.goalNode) {
         // Found end!
-        console.log('Success!');
+        console.log("Success!");
         this.drawNewState(current);
         return;
       } else {
@@ -92,7 +90,7 @@ export class Grid {
       });
     }
     // No solution
-    console.log('failed');
+    console.log("failed");
     return;
   }
 
@@ -170,7 +168,7 @@ class Node {
   public isVisted: boolean;
 
   constructor(i: number, j: number, rows: number, cols: number) {
-    this.elm = document.createElement('div');
+    this.elm = document.createElement("div");
     this.i = i;
     this.j = j;
     this.isVisted = false;
@@ -190,38 +188,38 @@ class Node {
   }
 
   public show() {
-    const newElement = document.createElement('div');
-    newElement.style.position = 'absolute';
-    newElement.style.boxSizing = 'border-box';
-    newElement.style.height = this.height + 'px';
-    newElement.style.width = this.width + 'px';
+    const newElement = document.createElement("div");
+    newElement.style.position = "absolute";
+    newElement.style.boxSizing = "border-box";
+    newElement.style.height = this.height + "px";
+    newElement.style.width = this.width + "px";
 
-    newElement.style.background = !this.isWall ? 'white' : 'black';
+    newElement.style.background = !this.isWall ? "white" : "black";
 
-    newElement.style.left = this.i * this.width + 'px';
-    newElement.style.top = this.j * this.height + 'px';
-    newElement.style.border = '1px solid black';
+    newElement.style.left = this.i * this.width + "px";
+    newElement.style.top = this.j * this.height + "px";
+    newElement.style.border = "1px solid black";
     this.elm = newElement;
     c && c.appendChild(newElement);
   }
 
   public open() {
-    this.elm.style.background = 'green';
+    this.elm.style.background = "rgba(191,181,64,1)";
     if (this.elm.children.length === 0) {
-      const textElement = document.createElement('p');
-      textElement.innerHTML = '' + this.g;
+      const textElement = document.createElement("p");
+      textElement.innerHTML = "" + this.g;
       this.elm.appendChild(textElement);
     }
   }
 
   public close() {
-    this.elm.style.background = 'red';
+    this.elm.style.background = "rgba(70,70,70,1)";
 
     this.isVisted = true;
   }
 
   public dyePath() {
-    this.elm.style.background = 'blue';
+    this.elm.style.background = "rgba(0,112,122,1)";
   }
 
   public heuristic(end: Node) {
