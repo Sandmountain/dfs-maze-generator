@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const c = document.getElementById('canvas-container');
+const c = document.getElementById("canvas-container");
 export class Grid {
     constructor(rows, cols, start, goal) {
         this.rows = rows;
@@ -33,7 +33,6 @@ export class Grid {
         // Initially, only the start node is known.
         this.openSet.push(this.startNode);
         // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start to n currently known.
-        this.aStar();
     }
     aStar() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -42,7 +41,7 @@ export class Grid {
                 const current = this.openSet.reduce((a, b) => (a.f < b.f ? a : b));
                 if (current === this.goalNode) {
                     // Found end!
-                    console.log('Success!');
+                    console.log("Success!");
                     this.drawNewState(current);
                     return;
                 }
@@ -80,7 +79,7 @@ export class Grid {
                 });
             }
             // No solution
-            console.log('failed');
+            console.log("failed");
             return;
         });
     }
@@ -133,7 +132,7 @@ export class Grid {
 // Same as the cell
 class Node {
     constructor(i, j, rows, cols) {
-        this.elm = document.createElement('div');
+        this.elm = document.createElement("div");
         this.i = i;
         this.j = j;
         this.isVisted = false;
@@ -150,32 +149,32 @@ class Node {
         this.h = 0;
     }
     show() {
-        const newElement = document.createElement('div');
-        newElement.style.position = 'absolute';
-        newElement.style.boxSizing = 'border-box';
-        newElement.style.height = this.height + 'px';
-        newElement.style.width = this.width + 'px';
-        newElement.style.background = !this.isWall ? 'white' : 'black';
-        newElement.style.left = this.i * this.width + 'px';
-        newElement.style.top = this.j * this.height + 'px';
-        newElement.style.border = '1px solid black';
+        const newElement = document.createElement("div");
+        newElement.style.position = "absolute";
+        newElement.style.boxSizing = "border-box";
+        newElement.style.height = this.height + "px";
+        newElement.style.width = this.width + "px";
+        newElement.style.background = !this.isWall ? "white" : "black";
+        newElement.style.left = this.i * this.width + "px";
+        newElement.style.top = this.j * this.height + "px";
+        newElement.style.border = "1px solid black";
         this.elm = newElement;
         c && c.appendChild(newElement);
     }
     open() {
-        this.elm.style.background = 'green';
+        this.elm.style.background = "rgba(191,181,64,1)";
         if (this.elm.children.length === 0) {
-            const textElement = document.createElement('p');
-            textElement.innerHTML = '' + this.g;
+            const textElement = document.createElement("p");
+            textElement.innerHTML = "" + this.g;
             this.elm.appendChild(textElement);
         }
     }
     close() {
-        this.elm.style.background = 'red';
+        this.elm.style.background = "rgba(70,70,70,1)";
         this.isVisted = true;
     }
     dyePath() {
-        this.elm.style.background = 'blue';
+        this.elm.style.background = "rgba(0,112,122,1)";
     }
     heuristic(end) {
         //Manhathan Distance

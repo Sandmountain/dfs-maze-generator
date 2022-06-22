@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const c = document.getElementById('canvas-container');
+const c = document.getElementById("canvas-container");
 export class Maze {
     constructor(rows, columns, height, width) {
         //Maze Generator
@@ -48,7 +48,7 @@ export class Maze {
                 const current = this.openSet.reduce((a, b) => (a.f < b.f ? a : b));
                 if (current === this.goalNode) {
                     // Found end!
-                    console.log('Success!');
+                    console.log("Success!");
                     this.drawNewState(current);
                     return;
                 }
@@ -86,7 +86,7 @@ export class Maze {
                 });
             }
             // No solution
-            console.log('failed');
+            console.log("failed");
             return;
         });
     }
@@ -111,7 +111,7 @@ export class Maze {
     dfs() {
         // While the stack is not empty
         if (this.visitStack.length === 0) {
-            console.log('Solved');
+            console.log("Solved");
             return;
         }
         // Pop a cell from the stack and make it a current cell
@@ -162,29 +162,29 @@ export class Maze {
             !this.grid[i][j - 1].visited &&
             neighbours.push({
                 neighbour: this.grid[i][j - 1],
-                toDirection: 'top',
-                fromDirection: 'bottom',
+                toDirection: "top",
+                fromDirection: "bottom",
             }); //topNeighbour
         this.isInsideGrid(i + 1, j) &&
             !this.grid[i + 1][j].visited &&
             neighbours.push({
                 neighbour: this.grid[i + 1][j],
-                toDirection: 'right',
-                fromDirection: 'left',
+                toDirection: "right",
+                fromDirection: "left",
             }); //rightNeighbour
         this.isInsideGrid(i, j + 1) &&
             !this.grid[i][j + 1].visited &&
             neighbours.push({
                 neighbour: this.grid[i][j + 1],
-                toDirection: 'bottom',
-                fromDirection: 'top',
+                toDirection: "bottom",
+                fromDirection: "top",
             }); //bottomNeighbour
         this.isInsideGrid(i - 1, j) &&
             !this.grid[i - 1][j].visited &&
             neighbours.push({
                 neighbour: this.grid[i - 1][j],
-                toDirection: 'left',
-                fromDirection: 'right',
+                toDirection: "left",
+                fromDirection: "right",
             }); //leftNeighbour
         return neighbours;
     }
@@ -197,7 +197,7 @@ export class Maze {
 }
 class Cell {
     constructor(i, j, rows, columns) {
-        this.elm = document.createElement('div');
+        this.elm = document.createElement("div");
         this.i = i;
         this.j = j;
         this.columns = columns;
@@ -219,10 +219,10 @@ class Cell {
         this.draw(i, j);
     }
     updateStyle() {
-        this.elm.style.background = 'green';
+        this.elm.style.background = "green";
     }
     removeBackgroundColor() {
-        this.elm.style.background = 'white';
+        this.elm.style.background = "white";
     }
     visit() {
         this.visited = true;
@@ -230,16 +230,16 @@ class Cell {
     }
     removeBorder(direction) {
         switch (direction) {
-            case 'top':
+            case "top":
                 this.removeTopBorder();
                 break;
-            case 'right':
+            case "right":
                 this.removeRightBorder();
                 break;
-            case 'bottom':
+            case "bottom":
                 this.removeBottomBorder();
                 break;
-            case 'left':
+            case "left":
                 this.removeLeftBorder();
                 break;
             default:
@@ -247,91 +247,86 @@ class Cell {
         }
     }
     draw(i, j) {
-        const newElement = document.createElement('div');
-        newElement.style.position = 'absolute';
-        newElement.style.boxSizing = 'border-box';
-        newElement.style.height = this.height + 'px';
-        newElement.style.width = this.width + 'px';
-        newElement.style.background = 'gray';
-        newElement.style.left = i * this.width + 'px';
-        newElement.style.top = j * this.height + 'px';
-        newElement.style.borderTop = ' 1px solid black';
-        newElement.style.borderBottom = ' 1px solid black';
-        newElement.style.borderRight = ' 1px solid black';
-        newElement.style.borderLeft = ' 1px solid black';
+        const newElement = document.createElement("div");
+        newElement.style.position = "absolute";
+        newElement.style.boxSizing = "border-box";
+        newElement.style.height = this.height + "px";
+        newElement.style.width = this.width + "px";
+        newElement.style.background = "gray";
+        newElement.style.left = i * this.width + "px";
+        newElement.style.top = j * this.height + "px";
+        newElement.style.borderTop = " 1px solid black";
+        newElement.style.borderBottom = " 1px solid black";
+        newElement.style.borderRight = " 1px solid black";
+        newElement.style.borderLeft = " 1px solid black";
         // To add start and goal
         if (i === 0 && j === 0) {
-            const startElement = document.createElement('div');
-            startElement.style.width = this.height / 2 + 'px';
-            startElement.style.height = this.height / 2 + 'px';
-            startElement.style.borderRadius = 50 + '%';
-            startElement.style.backgroundColor = 'white';
-            newElement.style.display = 'flex';
-            newElement.style.alignItems = 'center';
-            newElement.style.justifyContent = 'center';
+            const startElement = document.createElement("div");
+            startElement.style.width = this.height / 2 + "px";
+            startElement.style.height = this.height / 2 + "px";
+            startElement.style.borderRadius = 50 + "%";
+            startElement.style.backgroundColor = "white";
+            newElement.style.display = "flex";
+            newElement.style.alignItems = "center";
+            newElement.style.justifyContent = "center";
             newElement.appendChild(startElement);
         }
         else if (i === this.columns - 1 && j === this.rows - 1) {
-            const startElement = document.createElement('div');
-            startElement.className = 'endNode';
-            document.styleSheets[0].addRule('.endNode::after', 'content: "🏁";');
-            startElement.style.width = this.height / 2 + 'px';
-            startElement.style.height = this.height / 2 + 'px';
-            startElement.style.fontSize = 1 + 'em';
-            startElement.style.display = 'flex';
-            startElement.style.alignItems = 'center';
-            startElement.style.justifyContent = 'center';
-            newElement.style.display = 'flex';
-            newElement.style.alignItems = 'center';
-            newElement.style.justifyContent = 'center';
+            const startElement = document.createElement("div");
+            startElement.className = "endNode";
+            document.styleSheets[0].addRule(".endNode::after", 'content: "🏁";');
+            startElement.style.width = this.height / 2 + "px";
+            startElement.style.height = this.height / 2 + "px";
+            startElement.style.fontSize = 1 + "em";
+            startElement.style.display = "flex";
+            startElement.style.alignItems = "center";
+            startElement.style.justifyContent = "center";
+            newElement.style.display = "flex";
+            newElement.style.alignItems = "center";
+            newElement.style.justifyContent = "center";
             newElement.appendChild(startElement);
         }
         this.elm = newElement;
         c && c.appendChild(newElement);
     }
     removeTopBorder() {
-        this.elm.style.borderTop = '';
+        this.elm.style.borderTop = "";
         this.openPath.top = true;
     }
     removeRightBorder() {
-        this.elm.style.borderRight = '';
+        this.elm.style.borderRight = "";
         this.openPath.right = true;
     }
     removeBottomBorder() {
-        this.elm.style.borderBottom = '';
+        this.elm.style.borderBottom = "";
         this.openPath.bottom = true;
     }
     removeLeftBorder() {
-        this.elm.style.borderLeft = '';
+        this.elm.style.borderLeft = "";
         this.openPath.left = true;
     }
     show() {
-        const newElement = document.createElement('div');
-        newElement.style.position = 'absolute';
-        newElement.style.boxSizing = 'border-box';
-        newElement.style.height = this.height + 'px';
-        newElement.style.width = this.width + 'px';
-        newElement.style.background = !this.isWall ? 'white' : 'black';
-        newElement.style.left = this.i * this.width + 'px';
-        newElement.style.top = this.j * this.height + 'px';
-        newElement.style.border = '1px solid black';
+        const newElement = document.createElement("div");
+        newElement.style.position = "absolute";
+        newElement.style.boxSizing = "border-box";
+        newElement.style.height = this.height + "px";
+        newElement.style.width = this.width + "px";
+        newElement.style.background = !this.isWall ? "white" : "black";
+        newElement.style.left = this.i * this.width + "px";
+        newElement.style.top = this.j * this.height + "px";
+        newElement.style.border = "1px solid black";
         this.elm = newElement;
         c && c.appendChild(newElement);
     }
     open() {
-        this.elm.style.background = 'rgba(0,255,0,1)';
-        if (false && this.elm.children.length === 0) {
-            const textElement = document.createElement('p');
-            textElement.innerHTML = '' + this.g;
-            this.elm.appendChild(textElement);
-        }
+        this.elm.style.background = "rgba(191,181,64,1)";
     }
     close() {
-        this.elm.style.background = 'rgba(70,70,70,1)';
+        this.elm.style.background = "rgba(70,70,70,1)";
         this.isVisted = true;
     }
     dyePath() {
-        this.elm.style.background = 'rgba(0,112,122,.6)';
+        this.elm.style.background = "rgba(0,112,122,1)";
     }
     heuristic(end) {
         //Manhathan Distance
