@@ -1,11 +1,19 @@
-const c = document.getElementById('canvas-container');
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+const c = document.getElementById("canvas-container");
 export class Grid {
     constructor(rows, cols, start, goal) {
         this.rows = rows;
         this.cols = cols;
         this.openSet = [];
         this.closedSet = [];
-        this.cameFrom = [];
         //Generate Grid
         this.grid = new Array(cols);
         for (let i = 0; i < cols; i++) {
@@ -15,6 +23,7 @@ export class Grid {
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
                 this.grid[i][j] = new Node(i, j, rows, cols);
+                this.grid[i][j].show();
             }
         }
         //Start upper left, goal bottom right
@@ -24,73 +33,73 @@ export class Grid {
         // Initially, only the start node is known.
         this.openSet.push(this.startNode);
         // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start to n currently known.
-        this.aStar();
     }
     aStar() {
-        if (this.openSet.length > 0) {
-            // Retrives the lowest fscore from the open set list
-            const current = this.openSet.reduce((a, b) => (a.f < b.f ? a : b));
-            if (current === this.goalNode) {
-                // Found end!
-                console.log('Success!');
-                current.dyePath();
-                let temp = current;
-                const shortestPath = [];
-                temp.dyePath();
-                while (temp.previousNode) {
-                    shortestPath.push(temp.previousNode);
-                    temp.dyePath();
-                    temp = temp.previousNode;
-                }
-                temp.dyePath();
-                return;
-            }
-            // removes the current from the list
-            this.openSet.splice(this.openSet.indexOf(current), 1);
-            // Add to closedset
-            current.close();
-            this.closedSet.push(current);
-            // For each neighbor of current
-            const currentNeigbours = this.findNeighbours(current.i, current.j);
-            currentNeigbours.forEach((neighbour) => {
-                // d(current,neighbor) is the weight of the edge from current to neighbor
-                // tentative_gScore is the distance from start to the neighbor through current
-                let tentative_gScore = current.g + 1;
-                if (this.openSet.indexOf(neighbour) !== -1) {
-                    if (tentative_gScore < neighbour.g) {
-                        neighbour.g = tentative_gScore;
-                        neighbour.previousNode = current;
-                    }
+        return __awaiter(this, void 0, void 0, function* () {
+            while (this.openSet.length > 0) {
+                // Retrives the lowest fscore from the open set list
+                const current = this.openSet.reduce((a, b) => (a.f < b.f ? a : b));
+                if (current === this.goalNode) {
+                    // Found end!
+                    console.log("Success!");
+                    this.drawNewState(current);
+                    return;
                 }
                 else {
-                    neighbour.g = tentative_gScore;
-                    this.openSet.push(neighbour);
+                    yield this.drawNewState(current);
                 }
-                neighbour.h = neighbour.heuristic(this.goalNode);
-                neighbour.f = neighbour.g + neighbour.h;
-                neighbour.previousNode = current;
-            });
-            setTimeout(() => {
-                this.aStar();
-            }, 1000 / 5);
-        }
-        else {
-            // No solution
-            console.log('failed');
-            return;
-        }
-        // Show the grid
-        for (let i = 0; i < this.cols; i++) {
-            for (let j = 0; j < this.rows; j++) {
-                this.grid[i][j].show();
+                // removes the current from the list
+                this.openSet.splice(this.openSet.indexOf(current), 1);
+                // Add to closedset
+                current.close();
+                this.closedSet.push(current);
+                // For each neighbor of current
+                const currentNeigbours = this.findNeighbours(current.i, current.j);
+                currentNeigbours.forEach((neighbour) => {
+                    // d(current,neighbor) is the weight of the edge from current to neighbor
+                    // tentative_gScore is the distance from start to the neighbor through current
+                    let tentative_gScore = current.g + 1;
+                    if (this.openSet.indexOf(neighbour) !== -1) {
+                        if (tentative_gScore < neighbour.g) {
+                            // Add values to the temporary best node
+                            neighbour.g = tentative_gScore;
+                            neighbour.h = neighbour.heuristic(this.goalNode);
+                            neighbour.f = neighbour.g + neighbour.h;
+                            neighbour.previousNode = current;
+                        }
+                    }
+                    else {
+                        //
+                        neighbour.g = tentative_gScore;
+                        neighbour.previousNode = current;
+                        neighbour.h = neighbour.heuristic(this.goalNode);
+                        neighbour.f = neighbour.g + neighbour.h;
+                        this.openSet.push(neighbour);
+                    }
+                });
             }
-        }
+            // No solution
+            console.log("failed");
+            return;
+        });
+    }
+    drawNewState(current) {
         for (let i = 0; i < this.openSet.length; i++) {
             this.openSet[i].open();
         }
         for (let i = 0; i < this.closedSet.length; i++) {
             this.closedSet[i].close();
         }
+        current.dyePath();
+        let temp = current;
+        const shortestPath = [];
+        temp.dyePath();
+        while (temp.previousNode) {
+            shortestPath.push(temp.previousNode);
+            temp = temp.previousNode;
+            temp.dyePath();
+        }
+        return new Promise((r) => setTimeout(r, 1));
     }
     findNeighbours(i, j) {
         //let currentNode = this.grid[i][j];
@@ -123,14 +132,12 @@ export class Grid {
 // Same as the cell
 class Node {
     constructor(i, j, rows, cols) {
-        this.elm = document.createElement('div');
+        this.elm = document.createElement("div");
         this.i = i;
         this.j = j;
         this.isVisted = false;
         this.height = c.clientHeight / cols;
         this.width = c.clientWidth / rows;
-        // Ram runt hela griden atm
-        //  && i !== 0 && j !== 0 && i !== cols - 1 && j !== rows - 1
         if (Math.random() <= 0.3 && i !== cols - 1 && j !== rows - 1) {
             this.isWall = true;
         }
@@ -142,34 +149,32 @@ class Node {
         this.h = 0;
     }
     show() {
-        const newElement = document.createElement('div');
-        newElement.style.position = 'absolute';
-        newElement.style.boxSizing = 'border-box';
-        newElement.style.height = this.height + 'px';
-        newElement.style.width = this.width + 'px';
-        newElement.style.background = !this.isWall ? 'white' : 'black';
-        newElement.style.left = this.i * this.width + 'px';
-        newElement.style.top = this.j * this.height + 'px';
-        newElement.style.border = '1px solid black';
+        const newElement = document.createElement("div");
+        newElement.style.position = "absolute";
+        newElement.style.boxSizing = "border-box";
+        newElement.style.height = this.height + "px";
+        newElement.style.width = this.width + "px";
+        newElement.style.background = !this.isWall ? "white" : "black";
+        newElement.style.left = this.i * this.width + "px";
+        newElement.style.top = this.j * this.height + "px";
+        newElement.style.border = "1px solid black";
         this.elm = newElement;
         c && c.appendChild(newElement);
     }
     open() {
-        this.elm.style.background = 'green';
-        const textElement = document.createElement('span');
-        textElement.innerHTML = 'val: ' + this.g;
-        this.elm.appendChild(textElement);
+        this.elm.style.background = "rgba(191,181,64,1)";
+        if (this.elm.children.length === 0) {
+            const textElement = document.createElement("p");
+            textElement.innerHTML = "" + this.g;
+            this.elm.appendChild(textElement);
+        }
     }
     close() {
-        this.elm.style.background = 'red';
-        const textElement = document.createElement('span');
-        textElement.style.fontSize = '1.5em';
-        textElement.innerHTML = 'val: ' + this.g;
-        this.elm.appendChild(textElement);
+        this.elm.style.background = "rgba(70,70,70,1)";
         this.isVisted = true;
     }
     dyePath() {
-        this.elm.style.background = 'blue';
+        this.elm.style.background = "rgba(0,112,122,1)";
     }
     heuristic(end) {
         //Manhathan Distance
@@ -178,7 +183,3 @@ class Node {
         //return Math.sqrt(Math.pow(end.i - this.i, 2) + Math.pow(end.j - this.j, 2));
     }
 }
-//OpenSet
-// -> Nodes that needs to be processed.
-//ClosetSet
-// -> Stores all done things
